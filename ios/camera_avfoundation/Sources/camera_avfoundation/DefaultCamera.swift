@@ -20,6 +20,39 @@ final class DefaultCamera: NSObject, Camera {
       ]
     }
   }
+    
+    
+    /// Get the preferred video format for the given video output.
+     static func getPreferredVideoFormat() -> OSType {
+      // Define preferred pixel formats in order of preference
+      let preferredFormats: [OSType] = [
+        kCVPixelFormatType_32BGRA,
+        kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
+        kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+      ]
+      // Swift equivalent of: AVCaptureVideoDataOutput *tempOutput = [[AVCaptureVideoDataOutput alloc] init];
+      let videoOutput = AVCaptureVideoDataOutput()
+
+      // Get available formats and convert from NSNumber to OSType
+      let availableFormats = videoOutput.availableVideoPixelFormatTypes
+      let availablePixelFormats = availableFormats.compactMap { ($0 as NSNumber).uint32Value }
+
+      // Find the first preferred format that is available
+      for format in preferredFormats {
+        if availablePixelFormats.contains(format) {
+          return format
+        }
+      }
+
+      if let firstAvailable = availablePixelFormats.first {
+        return firstAvailable
+      }
+
+      // Ultimate fallback: use the original default format
+      return kCVPixelFormatType_32BGRA
+    }
+
+    
 
   private(set) var isPreviewPaused = false
 

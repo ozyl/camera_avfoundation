@@ -298,7 +298,7 @@ extension CameraPlugin: FCPCameraApi {
   ) {
     guard let camera = camera else { return }
 
-    camera.videoFormat = FCPGetPixelFormatForPigeonFormat(imageFormat)
+    camera.videoFormat = DefaultCamera.getPreferredVideoFormat()
 
     camera.onFrameAvailable = { [weak self] in
       guard let camera = self?.camera else { return }
